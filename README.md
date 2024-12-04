@@ -28,7 +28,7 @@ services:
             - KAFKA_BROKER_ID=1
             - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
             - KAFKA_LISTENERS=INTERNAL://:9093,EXTERNAL://:9092
-            - KAFKA_ADVERTISED_LISTENERS=INTERNAL://streams-kafka-1:9093,EXTERNAL://localhost:9092
+            - KAFKA_ADVERTISED_LISTENERS=INTERNAL://stream-for-extracting-kafka-1:9093,EXTERNAL://localhost:9092
             - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
             - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
         depends_on:
@@ -39,6 +39,8 @@ networks:
     kafka-network:
         driver: bridge
 ```
+
+> ***NOTE***: The value of `KAFKA_ADVERTISED_LISTENERS` should be set to the name of the Kafka container followed by the port number `:9093`. This is the address that the producer script will use to connect to the Kafka broker. The `EXTERNAL` listener is set to `localhost:9092` to allow the console consumer to connect to the Kafka broker.  It is generally given the name of the folder the docker-compose file is in followed by the container name defined in the file and then suffixed with `-1`.
 
 2. **Start Zookeeper and Kafka Using Docker Compose**:
    Navigate to the directory containing the docker-compose.yml file and run the following command to start Zookeeper and Kafka:
@@ -131,7 +133,7 @@ RUN pip install confluent_kafka
 CMD ["python", "kafka_producer.py"]
 ```
 
-> This will create a Docker container with the Python:3.13 image, copy the `kafka_producer.py` script, install the `confluent_kafka` package, and then run the `kafka_producer.py` script.
+> This will create a Docker container with the Python:3.13 image, copy the `kafka_producer.py` script and install the `confluent_kafka` package.  It will not run the `kafka_producer.py` script.
 
 3. **Build the Container**:
    Create the Docker container by running the following command:
@@ -148,7 +150,7 @@ docker network ls
 ```
 
 5. **Run the Container**:
-   Run the Docker container with the following command:
+   Run the Docker container with the following command, which will execute the `kafka_producer.py` script:
 
 ```sh
 docker run -it --network <network_name> kafka_producer
