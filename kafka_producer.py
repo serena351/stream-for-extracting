@@ -3,7 +3,7 @@ import time
 from confluent_kafka import Producer
 
 # Replace this with the name of your Kafka Container (leaving :9093 in place)
-bootstrap_server = 'streams-kafka-1:9093' 
+bootstrap_server = 'stream-for-extracting-kafka-1:9093' 
 
 # Create a Kafka producer
 producer = Producer({
